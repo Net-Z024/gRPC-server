@@ -17,6 +17,105 @@ namespace GrpcService1.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.20");
 
+            modelBuilder.Entity("GrpcService1.Models.Chest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Chests");
+                });
+
+            modelBuilder.Entity("GrpcService1.Models.ChestItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChestId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("DropChance")
+                        .HasColumnType("decimal(5,4)");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChestId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ChestItems");
+                });
+
+            modelBuilder.Entity("GrpcService1.Models.Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("GrpcService1.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("IdentityId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GrpcService1.Models.UserItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserItems");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -213,6 +312,44 @@ namespace GrpcService1.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("GrpcService1.Models.ChestItem", b =>
+                {
+                    b.HasOne("GrpcService1.Models.Chest", "Chest")
+                        .WithMany("PossibleItems")
+                        .HasForeignKey("ChestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GrpcService1.Models.Item", "Item")
+                        .WithMany("ChestItems")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chest");
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("GrpcService1.Models.UserItem", b =>
+                {
+                    b.HasOne("GrpcService1.Models.Item", "Item")
+                        .WithMany("UserItems")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GrpcService1.Models.User", "User")
+                        .WithMany("UserItems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -262,6 +399,23 @@ namespace GrpcService1.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("GrpcService1.Models.Chest", b =>
+                {
+                    b.Navigation("PossibleItems");
+                });
+
+            modelBuilder.Entity("GrpcService1.Models.Item", b =>
+                {
+                    b.Navigation("ChestItems");
+
+                    b.Navigation("UserItems");
+                });
+
+            modelBuilder.Entity("GrpcService1.Models.User", b =>
+                {
+                    b.Navigation("UserItems");
                 });
 #pragma warning restore 612, 618
         }
