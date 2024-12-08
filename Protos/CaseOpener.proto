@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "gRPCServer";
+
+// Define the gRPC service
+service CaseOpener {
+    // Method to open a case
+    rpc OpenCase (OpenCaseRequest) returns (OpenCaseResponse);
+}
+
+// Request message for opening a case
+message OpenCaseRequest {
+    string case_id = 1; // ID of the case being opened (optional, for specific case handling)
+}
+
+// Response message with the result of the opened case
+message OpenCaseResponse {
+    int32 index = 1;    // Index of the selected item (e.g., 0 for the first segment)
+    string name = 2;    // Name of the selected item (e.g., "Rare Item")
+    string image_url = 3; // Optional: URL for an image of the item
+}
