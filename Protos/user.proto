@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option csharp_namespace = "YourNamespace.Protos";
+
+package user;
+
+service UserGrpc {
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  rpc AddBalance (AddBalanceRequest) returns (BalanceResponse);
+  rpc SpendBalance (SpendBalanceRequest) returns (BalanceResponse);
+}
+
+message GetUserRequest {
+  int32 user_id = 1;
+}
+
+message GetUserResponse {
+  int32 id = 1;
+  string identity_id = 2;
+  double balance = 3;
+}
+
+message CreateUserRequest {
+  string identity_id = 1;
+}
+
+message CreateUserResponse {
+  int32 id = 1;
+  string identity_id = 2;
+  double balance = 3;
+}
+
+message AddBalanceRequest {
+  int32 user_id = 1;
+  double amount = 2;
+}
+
+message SpendBalanceRequest {
+  int32 user_id = 1;
+  double amount = 2;
+}
+
+message BalanceResponse {
+  bool success = 1;
+  double new_balance = 2;
+}
