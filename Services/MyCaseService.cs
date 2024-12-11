@@ -22,6 +22,7 @@ public class MyCaseService : CaseOpener.CaseOpenerBase
         //to sa 3 itemki do testowania komunikacji bo narazie nie pobieramy z api z bazy itp
         CaseItem[] items = {item,item2,item3};
 
+        Console.WriteLine("From case number "+request.CaseId+" I selected this item: " + items[selectedIndex].Name + " " + items[selectedIndex].ImageUrl);
         return Task.FromResult(new OpenCaseResponse
         {
             Index = selectedIndex,
@@ -45,6 +46,7 @@ public class MyCaseService : CaseOpener.CaseOpenerBase
         item3.ImageUrl = "https://community.fastly.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhhwszJemkV09-3hpSOm8j4OrzZgiVT6ZIn3e-RrdSkjAzh80s_YWvzIYbHdwJrZQmG_wO7wenug5Ho78ib1zI97dq5Qskr/360fx360f";
         //to sa 3 itemki do testowania komunikacji bo narazie nie pobieramy z api z bazy itp
         CaseItem[] items = { item, item2, item3 };
+        Console.WriteLine("I am sending case items from case number "+request.CaseId);
 
         var response = new GetCaseItemsResponse();
         response.Items.Add(item);
