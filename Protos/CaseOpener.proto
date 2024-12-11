@@ -6,6 +6,7 @@ option csharp_namespace = "gRPCServer";
 service CaseOpener {
     // Method to open a case
     rpc OpenCase (OpenCaseRequest) returns (OpenCaseResponse);
+    rpc GetCaseItems(GetCaseItemsRequest) returns (GetCaseItemsResponse);
 }
 
 // Request message for opening a case
@@ -18,4 +19,17 @@ message OpenCaseResponse {
     int32 index = 1;    // Index of the selected item (e.g., 0 for the first segment)
     string name = 2;    // Name of the selected item (e.g., "Rare Item")
     string image_url = 3; // Optional: URL for an image of the item
+}
+message GetCaseItemsRequest{
+    string case_id = 1;
+}
+message GetCaseItemsResponse
+{
+    repeated CaseItem items = 1;
+}
+
+message CaseItem {
+    string name = 1;      // Name of the item
+    string image_url = 2; // URL for an image of the item
+  
 }
