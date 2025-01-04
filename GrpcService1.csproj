@@ -7,20 +7,32 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos\greet.proto" GrpcServices="Server"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Grpc.AspNetCore" Version="2.49.0"/>
+        <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.50.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.68.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
+        <PackageReference Include="Google.Protobuf" Version="3.25.1" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.20" />
+        <PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.3.20" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.20" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.20" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.20" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.20">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Moq" Version="4.20.72" />
+        <PackageReference Include="xunit" Version="2.9.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+      <Folder Include="Protos\" />
     </ItemGroup>
 
 </Project>

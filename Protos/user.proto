@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcService1";
+
+package user;
+
+service UserGrpc {
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  //rpc AddBalance (AddBalanceRequest) returns (BalanceResponse);
+}
+
+message GetUserRequest {
+  int32 user_id = 1;
+}
+
+message GetUserResponse {
+  int32 id = 1;
+  string identity_id = 2;
+  double balance = 3;
+}
+
+message CreateUserRequest {
+  int32 user_id = 1;
+}
+
+message CreateUserResponse {
+  int32 id = 1;
+  string identity_id = 2;
+  double balance = 3;
+}
