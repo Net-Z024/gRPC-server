@@ -34,7 +34,9 @@ public class ChestGrpcService : ChestGrpc.ChestGrpcBase
                     {
                         Id = cp.Item.Id,
                         Name = cp.Item.Name,
-                        Value = (double)cp.Item.Value
+                        Value = (double)cp.Item.Value,
+                        ImageUrl = cp.Item.ImageUrl
+
                     },
                     DropChance = (double)cp.DropChance
                 })
@@ -49,7 +51,7 @@ public class ChestGrpcService : ChestGrpc.ChestGrpcBase
     {
         try
         {
-            var Item = await _chestService.OpenChestAsync(request.UserId, request.ChestId);
+            var item = await _chestService.OpenChestAsync(request.UserId, request.ChestId);
             var user = await _userService.GetByIdAsync(request.UserId);
 
             return new OpenChestResponse
@@ -57,9 +59,10 @@ public class ChestGrpcService : ChestGrpc.ChestGrpcBase
                 Success = true,
                 ReceivedItem = new ItemDto
                 {
-                    Id = Item.Id,
-                    Name = Item.Name,
-                    Value = (double)Item.Value
+                    Id = item.Id,
+                    Name = item.Name,
+                    Value = (double)item.Value,
+                    ImageUrl = item.ImageUrl
                 },
                 NewBalance = (double)user.Balance
             };

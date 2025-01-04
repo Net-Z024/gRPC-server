@@ -16,9 +16,9 @@ public class UserService : IUserService
         return await _context.Users.FindAsync(userId);
     }
 
-    public async Task<User> CreateUserAsync(string identityId)
+    public async Task<User> CreateUserAsync(int userId)
     {
-        var user = new User(identityId);
+        var user = new User(userId);
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
         return user;

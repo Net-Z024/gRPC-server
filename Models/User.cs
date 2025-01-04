@@ -5,15 +5,15 @@ public class User
     public int Id { get; private set; }
     public string IdentityId { get; private set; }
     public decimal Balance { get; private set; }
-    public ICollection<UserItem> UserItems { get; private set; }
+    public ICollection<UserItem> UserItems { get; private set; } = new List<UserItem>();
 
     private User() { } // For EF Core
 
-    public User(string identityId)
+    public User(int userId)
     {
-        IdentityId = identityId;
+        Id = userId;
+        IdentityId = Guid.NewGuid().ToString();
         Balance = 0;
-        UserItems = new List<UserItem>();
     }
 
     public void AddBalance(decimal amount)
@@ -31,9 +31,9 @@ public class User
         return true;
     }
 
-    public void AddItem(Item Item)
+    public void AddItem(Item item)
     {
-        var userItem = new UserItem(this.Id, Item.Id);
+        var userItem = new UserItem(user: this, item: item);
         UserItems.Add(userItem);
     }
 }

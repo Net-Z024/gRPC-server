@@ -33,14 +33,15 @@ public class ChestService : IChestService
 
         if (chest == null) throw new ArgumentException("Chest not found");
 
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users
+            .Include(u => u.UserItems)
+            .FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null) throw new ArgumentException("User not found");
 
         if (!await _userService.SpendBalanceAsync(userId, chest.Price))
             throw new InvalidOperationException("Insufficient balance");
 
-        // Draw Item based on drop chances
-        var roll = (decimal)_random.NextDouble();
+        var roll = (decimal)_random.NextDouble()*10;
         decimal cumulative = 0;
         
         foreach (var chestItem in chest.PossibleItems)
@@ -48,7 +49,7 @@ public class ChestService : IChestService
             cumulative += chestItem.DropChance;
             if (roll <= cumulative)
             {
-                user.AddItem(chestItem.Item);
+                user.AddItem(item: chestItem.Item);
                 await _context.SaveChangesAsync();
                 return chestItem.Item;
             }

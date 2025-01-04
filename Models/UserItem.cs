@@ -7,12 +7,14 @@ public class UserItem
     public int ItemId { get; private set; }
     public User User { get; private set; }
     public Item Item { get; private set; }
-
+    
     private UserItem() { } // For EF Core
 
-    public UserItem(int userId, int ItemId)
+    public UserItem(User user, Item item)
     {
-        UserId = userId;
-        ItemId = ItemId;
-    }
+        UserId = user.Id;
+        ItemId = item.Id;
+        User = user;
+        Item = item;
+    } // For EF Core
 }

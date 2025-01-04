@@ -26,7 +26,8 @@ public class ItemGrpcService : ItemGrpc.ItemGrpcBase
             {
                 Id = up.Item.Id,
                 Name = up.Item.Name,
-                Value = (double)up.Item.Value
+                Value = (double)up.Item.Value,
+                ImageUrl = up.Item.ImageUrl
             }
         }));
 

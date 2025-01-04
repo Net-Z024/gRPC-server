@@ -30,4 +30,22 @@ public class UserGrpcService : UserGrpc.UserGrpcBase
             Balance = (double)user.Balance
         };
     }
+    
+    public override async Task<CreateUserResponse> CreateUser(
+        CreateUserRequest request, ServerCallContext context)
+    {
+        var user = await _userService.CreateUserAsync(request.UserId);
+        
+        if (user == null)
+        {
+            throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
+        }
+
+        return new CreateUserResponse
+        {
+            Id = user.Id,
+            IdentityId = user.IdentityId,
+            Balance = (double)user.Balance
+        };
+    }
 }
