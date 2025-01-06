@@ -23,6 +23,19 @@ public class ItemService : IItemService
             .ToListAsync();
     }
 
+
+
+    public async Task<IEnumerable<ChestItem>> GetChestItemsAsync(int chestId)
+    {
+        return await _context.ChestItems
+            .Include(ci => ci.Item)
+            .Where(ci => ci.ChestId == chestId)
+            .ToListAsync();
+    }
+
+
+
+
     public async Task<(bool success, decimal newBalance)> SellItemAsync(int userId, int userItemId)
     {
         using var transaction = await _context.Database.BeginTransactionAsync();

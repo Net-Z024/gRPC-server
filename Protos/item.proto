@@ -6,6 +6,7 @@ package item;
 
 service ItemGrpc {
   rpc GetUserItems (GetUserItemsRequest) returns (GetUserItemsResponse);
+  rpc GetChestItems (GetChestItemsRequest) returns (GetChestItemsResponse);
   rpc SellItem (SellItemRequest) returns (SellItemResponse);
 }
 
@@ -15,11 +16,15 @@ message GetUserItemsRequest {
 }
 
 message GetChestItemsRequest {
-  int32 user_id = 1;
+  int32 chest_id = 1;
 }
 
 message GetUserItemsResponse {
   repeated UserItemDto Items = 1;
+}
+
+message GetChestItemsResponse {
+  repeated ItemDto Items = 1;
 }
 
 message SellItemRequest {

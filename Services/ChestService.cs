@@ -41,20 +41,26 @@ public class ChestService : IChestService
         if (!await _userService.SpendBalanceAsync(userId, chest.Price))
             throw new InvalidOperationException("Insufficient balance");
 
-        var roll = (decimal)_random.NextDouble()*10;
+        var roll = (decimal)_random.NextDouble();
         decimal cumulative = 0;
         
         foreach (var chestItem in chest.PossibleItems)
         {
+            Console.WriteLine("Am i here?");
             cumulative += chestItem.DropChance;
+            Console.WriteLine("cumulative :" + cumulative);
+            Console.WriteLine("Roll: " + roll);
             if (roll <= cumulative)
             {
+                Console.WriteLine("heja");
+
                 user.AddItem(item: chestItem.Item);
                 await _context.SaveChangesAsync();
+                Console.WriteLine("DOSTALES TO:" +chestItem.Item.Name);
                 return chestItem.Item;
             }
         }
-
+        Console.WriteLine("huh"+chest.PossibleItems);
         throw new InvalidOperationException("No Item was drawn (sum of drop chances might be less than 1)");
     }
 }
