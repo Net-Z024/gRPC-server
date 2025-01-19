@@ -18,8 +18,12 @@ public class UserService : IUserService
     {
         return await _context.Users.FindAsync(userId);
     }
+    public async Task<User> GetByIdentityUserIdAsync(string identityUserId)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.IdentityId == identityUserId);
+    }
 
-    public async Task<User> CreateUserAsync(string identityUserId)
+    public async Task<User> CreateUserByIdentityAsync(string identityUserId)
     {
         var user = new User(identityUserId);
 
@@ -28,7 +32,13 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
         return user;
     }
-
+    public async Task<User> CreateUserAsync(int userId)
+    {
+        var user = new User(userId);
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
     public async Task<bool> AddBalanceAsync(int userId, decimal amount)
     {
         var user = await _context.Users.FindAsync(userId);

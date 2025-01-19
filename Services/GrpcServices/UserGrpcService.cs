@@ -1,4 +1,5 @@
 using Grpc.Core;
+using GrpcService1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -40,8 +41,8 @@ public class UserGrpcService : UserGrpc.UserGrpcBase
     public override async Task<CreateUserResponse> CreateUser(
         CreateUserRequest request, ServerCallContext context)
     {
-        //var user = await _userService.CreateUserAsync(request.UserId);
-        /*
+        var user = await _userService.CreateUserAsync(request.UserId);
+        
         if (user == null)
         {
             throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
@@ -52,8 +53,8 @@ public class UserGrpcService : UserGrpc.UserGrpcBase
             Id = user.Id,
             IdentityId = user.IdentityId,
             Balance = (double)user.Balance
-        };*/
-        return null;
+        };
+        
     }
 
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
@@ -81,7 +82,7 @@ public class UserGrpcService : UserGrpc.UserGrpcBase
        
         if (result.Succeeded)
         {
-            await _userService.CreateUserAsync(user.Id); 
+            await _userService.CreateUserByIdentityAsync(user.Id); 
             return new RegisterResponse
             {
                 Success = true,
@@ -117,7 +118,8 @@ public class UserGrpcService : UserGrpc.UserGrpcBase
         }
 
         Console.WriteLine($"User found: {user.UserName}, Id: {user.Id}, Email: {user.Email}");
-
+        User customUser = await _userService.GetByIdentityUserIdAsync(user.Id);
+        
         var key = Encoding.UTF8.GetBytes("YourSecureKey12345678901234567890123456789012345678");
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -127,7 +129,9 @@ public class UserGrpcService : UserGrpc.UserGrpcBase
             {
             new Claim(ClaimTypes.Name, user.UserName),
             new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Email, user.Email ?? "")
+            new Claim(ClaimTypes.Email, user.Email ?? ""),
+            new Claim(ClaimTypes.Sid,customUser.Id.ToString()), // id customowego uzytkownika dla frontu
+            new Claim(ClaimTypes.GivenName,customUser.Balance.ToString()) // i jego balans
         }),
             Expires = DateTime.UtcNow.AddHours(1),
             Issuer = "GrpcServer",

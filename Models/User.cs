@@ -22,6 +22,12 @@ namespace GrpcService1.Models
             IdentityId = identityUserId;
             Balance = 0;
         }
+        public User(int userId)
+        {
+            Id = userId;
+            IdentityId = Guid.NewGuid().ToString();
+            Balance = 0;
+        }
 
         public void AddBalance(decimal amount)
         {
