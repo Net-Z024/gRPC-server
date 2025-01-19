@@ -4,10 +4,12 @@ option csharp_namespace = "GrpcService1";
 
 package user;
 
+// UserGrpc service definition
 service UserGrpc {
   rpc GetUser (GetUserRequest) returns (GetUserResponse);
   rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
-  //rpc AddBalance (AddBalanceRequest) returns (BalanceResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc Register (RegisterRequest) returns (RegisterResponse); // New Register RPC method
 }
 
 message GetUserRequest {
@@ -20,6 +22,7 @@ message GetUserResponse {
   double balance = 3;
 }
 
+
 message CreateUserRequest {
   int32 user_id = 1;
 }
@@ -28,4 +31,28 @@ message CreateUserResponse {
   int32 id = 1;
   string identity_id = 2;
   double balance = 3;
+}
+
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+  string email = 3; 
+}
+
+message RegisterResponse {
+  bool success = 1;
+  string message = 2;
 }

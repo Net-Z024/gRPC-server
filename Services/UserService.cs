@@ -1,6 +1,9 @@
 using GrpcService1.Data;
 using GrpcService1.Models;
 using GrpcService1.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using static Google.Rpc.Context.AttributeContext.Types;
 
 public class UserService : IUserService
 {
@@ -16,9 +19,11 @@ public class UserService : IUserService
         return await _context.Users.FindAsync(userId);
     }
 
-    public async Task<User> CreateUserAsync(int userId)
+    public async Task<User> CreateUserAsync(string identityUserId)
     {
-        var user = new User(userId);
+        var user = new User(identityUserId);
+
+        
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
         return user;

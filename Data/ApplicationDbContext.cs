@@ -46,7 +46,18 @@ public class ApplicationDbContext : IdentityDbContext
         modelBuilder.Entity<User>()
             .Property(u => u.Balance)
             .HasColumnType("decimal(18,2)");
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.Id); // Primary key
+        
 
+            // Define foreign key relationship with IdentityUser
+            entity.HasOne(u => u.IdentityUser)
+                .WithMany() // No navigation property in IdentityUser
+                .HasForeignKey(u => u.IdentityId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
         modelBuilder.Entity<Item>()
             .Property(p => p.Value)
             .HasColumnType("decimal(18,2)");
