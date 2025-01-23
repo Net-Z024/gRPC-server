@@ -1,0 +1,73 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "GrpcService1";
+import "google/protobuf/timestamp.proto";
+package game;
+
+service GameGrpc {
+  rpc JoinGame (JoinGameRequest) returns (JoinGameResponse);
+  rpc CreateGame(CreateGameRequest) returns (CreateGameResponse);
+  rpc MarkReady (MarkReadyRequest) returns (MarkReadyResponse);
+  rpc StartGame(StartGameRequest) returns (StartGameResponse);
+  rpc GetOpenGames (GetOpenGamesRequest) returns (GetOpenGamesResponse);
+
+}
+
+//Request, Response
+message JoinGameRequest {
+    int32 game_id = 1;
+    int32 user_id = 2;
+}
+
+message JoinGameResponse {
+   string message = 1;
+    bool success = 2;
+}
+
+message CreateGameRequest {
+    int32 host_id = 1;
+    int32 case_id = 2;
+    int32 max_players = 3;
+}
+message CreateGameResponse {
+    int32 game_id = 1;
+    google.protobuf.Timestamp created_at = 2;
+    string message = 3;
+}
+
+message MarkReadyRequest {
+  int32 game_id = 1;
+    int32 user_id = 2;
+}
+message MarkReadyResponse {
+  string message = 1;
+    bool success = 2;
+}
+message StartGameRequest {
+   int32 game_id = 1;
+}
+message StartGameResponse {
+  int32 winner_id = 1;
+    repeated PlayerResult results = 2;
+}
+message PlayerResult {
+    int32 user_id = 1;
+    string item_name = 2;
+    int32 value = 3;
+}
+message GetOpenGamesRequest {
+    // tu mozna dodac potem jakies np filtry np konkretna skrzynka albo ile graczy moze grac
+}
+
+message GameInfo {
+    int32 gameId = 1;
+    int32 hostId = 2;
+    int32 caseId = 3;
+    int32 maxPlayers = 4;
+    bool isStarted = 5;
+    google.protobuf.Timestamp createdAt = 6;
+}
+
+message GetOpenGamesResponse {
+    repeated GameInfo games = 1;
+}

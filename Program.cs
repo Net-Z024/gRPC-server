@@ -66,6 +66,7 @@ app.UseAuthorization();
 app.MapGrpcService<UserGrpcService>();
 app.MapGrpcService<ChestGrpcService>();
 app.MapGrpcService<ItemGrpcService>();
+app.MapGrpcService<GameGrpcService>();
 app.MapGrpcReflectionService();
 
 app.MapGet("/", () =>

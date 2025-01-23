@@ -17,6 +17,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.20" />
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.3.0" />
         <Protobuf Include="Protos\*.proto" GrpcServices="Server" />
+        <None Remove="Protos\game.proto" />
         <PackageReference Include="Google.Protobuf" Version="3.25.1" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.20" />
         <PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.3.20" />
@@ -35,7 +36,6 @@
 
     <ItemGroup>
       <Folder Include="Migrations\" />
-      <Folder Include="Protos\" />
     </ItemGroup>
 
 </Project>
