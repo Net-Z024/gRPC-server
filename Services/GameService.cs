@@ -11,8 +11,8 @@ namespace GrpcService1.Services
     public class GameService : IGameService
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserService _userService;
-        public GameService(ApplicationDbContext context,UserService userService)
+        private readonly IUserService _userService;
+        public GameService(ApplicationDbContext context,IUserService userService)
         {
             _context = context;
             _userService = userService;

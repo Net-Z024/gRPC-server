@@ -9,10 +9,10 @@ namespace GrpcService1.Services.GrpcServices
 {
     public class GameGrpcService : GameGrpc.GameGrpcBase
     {
-        private readonly GameService _gameService;
+        private readonly IGameService _gameService;
         private readonly ILogger<GameGrpcService> _logger;
 
-        public GameGrpcService(GameService gameService, ILogger<GameGrpcService> logger)
+        public GameGrpcService(IGameService gameService, ILogger<GameGrpcService> logger)
         {
             _gameService = gameService;
             _logger = logger;
@@ -27,7 +27,7 @@ namespace GrpcService1.Services.GrpcServices
                 return new CreateGameResponse
                 {
                     GameId = game.Id,
-                    CreatedAt = game.createdAt.ToTimestamp(),
+                    CreatedAt = Timestamp.FromDateTime(game.createdAt.ToUniversalTime()),
                     Message = "Game created successfully!"
                 };
             }
@@ -96,7 +96,7 @@ namespace GrpcService1.Services.GrpcServices
                         CaseId = game.caseId,
                         MaxPlayers = game.maxPlayers,
                         IsStarted = game.isStarted,
-                        CreatedAt = game.createdAt.ToTimestamp()
+                        CreatedAt = Timestamp.FromDateTime(game.createdAt.ToUniversalTime())
                     });
                 }
 

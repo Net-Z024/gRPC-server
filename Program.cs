@@ -56,6 +56,8 @@ builder.Services.AddGrpcReflection();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IChestService, ChestService>();
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IGameService, GameService>();
+
 
 // Build the app AFTER registering all services
 var app = builder.Build();
