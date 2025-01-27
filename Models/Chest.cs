@@ -16,12 +16,23 @@ public class Chest
         PossibleItems = new List<ChestItem>();
     }
 
-    public void AddPossibleItem(Item Item, decimal dropChance)
+    public void AddPossibleItem(int itemId, decimal dropChance)
     {
         if (dropChance < 0 || dropChance > 1)
             throw new ArgumentException("Drop chance must be between 0 and 1");
 
-        var chestItem = new ChestItem(this.Id, Item.Id, dropChance);
+        var chestItem = new ChestItem(Id, itemId, dropChance);
         PossibleItems.Add(chestItem);
+    }
+
+    public void Update(string name, decimal price)
+    {
+        Name = name;
+        Price = price;
+    }
+
+    public void ClearPossibleItems()
+    {
+        PossibleItems.Clear();
     }
 }
