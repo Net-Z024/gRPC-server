@@ -69,6 +69,7 @@ app.MapGrpcService<UserGrpcService>();
 app.MapGrpcService<ChestGrpcService>();
 app.MapGrpcService<ItemGrpcService>();
 app.MapGrpcService<GameGrpcService>();
+app.MapGrpcService<AdminGrpcService>();
 app.MapGrpcReflectionService();
 
 app.MapGet("/", () =>

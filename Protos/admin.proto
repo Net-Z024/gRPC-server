@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package Admin;
+
+option csharp_namespace = "GrpcService1";
+
+import "Protos/chest.proto";
+
+service AdminService {
+  rpc CreateChest (CreateChestRequest) returns (CreateChestResponse);
+  rpc ReadChest (ReadChestRequest) returns (ReadChestResponse);
+  rpc UpdateChest (UpdateChestRequest) returns (UpdateChestResponse);
+  rpc DeleteChest (DeleteChestRequest) returns (DeleteChestResponse);
+}
+
+message CreateChestRequest {
+  string name = 1;
+  double price = 2;
+  repeated ItemIdWithDropChance possible_items = 3;
+}
+
+message CreateChestResponse {
+  chest.ChestDto chest = 1;
+}
+
+message ReadChestRequest {
+  int32 id = 1;
+}
+
+message ReadChestResponse {
+  chest.ChestDto chest = 1;
+}
+
+message UpdateChestRequest {
+  int32 id = 1;
+  string name = 2;
+  double price = 3;
+  repeated ItemIdWithDropChance possible_items = 4;
+}
+
+message UpdateChestResponse {
+  chest.ChestDto chest = 1;
+}
+
+message DeleteChestRequest {
+  int32 id = 1;
+}
+
+message DeleteChestResponse {
+  bool success = 1;
+}
+
+message ItemIdWithDropChance {
+  int32 itemId = 1;
+  double drop_chance = 2;
+}
