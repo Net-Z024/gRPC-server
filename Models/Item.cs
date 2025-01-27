@@ -19,4 +19,26 @@ public class Item
         UserItems = new List<UserItem>();
         ChestItems = new List<ChestItem>();
     }
+
+    public void Update(string name, decimal value, string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Name cannot be empty or null", nameof(name));
+        }
+
+        if (value < 0)
+        {
+            throw new ArgumentException("Value must be a positive number", nameof(value));
+        }
+
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            throw new ArgumentException("Image URL cannot be empty or null", nameof(imageUrl));
+        }
+
+        Name = name;
+        Value = value;
+        ImageUrl = imageUrl;
+    }
 }

@@ -23,8 +23,6 @@ public class ItemService : IItemService
             .ToListAsync();
     }
 
-
-
     public async Task<IEnumerable<ChestItem>> GetChestItemsAsync(int chestId)
     {
         return await _context.ChestItems
@@ -32,9 +30,6 @@ public class ItemService : IItemService
             .Where(ci => ci.ChestId == chestId)
             .ToListAsync();
     }
-
-
-
 
     public async Task<(bool success, decimal newBalance)> SellItemAsync(int userId, int userItemId)
     {
@@ -47,10 +42,7 @@ public class ItemService : IItemService
 
             if (userItem == null) return (false, 0);
 
-            // Remove the Item from user's inventory
             _context.UserItems.Remove(userItem);
-            
-            // Add the value to user's balance
             await _userService.AddBalanceAsync(userId, userItem.Item.Value);
 
             await _context.SaveChangesAsync();
@@ -64,5 +56,48 @@ public class ItemService : IItemService
             await transaction.RollbackAsync();
             return (false, 0);
         }
+    }
+
+    // IItemService Methods
+
+    public async Task CreateItemAsync(Item item)
+    {
+        await _context.Items.AddAsync(item);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Item> GetItemByIdAsync(int id)
+    {
+        return await _context.Items.FirstOrDefaultAsync(i => i.Id == id);
+    }
+
+    public async Task UpdateItemAsync(Item item)
+    {
+        var existingItem = await _context.Items.FirstOrDefaultAsync(i => i.Id == item.Id);
+        if (existingItem == null)
+        {
+            throw new ArgumentException("Item not found");
+        }
+
+        existingItem.Update(item.Name, item.Value, item.ImageUrl);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> DeleteItemAsync(int id)
+    {
+        var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == id);
+        if (item == null)
+        {
+            return false;
+        }
+
+        _context.Items.Remove(item);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<IEnumerable<Item>> GetAllItemsAsync()
+    {
+        return await _context.Items.ToListAsync();
     }
 }
