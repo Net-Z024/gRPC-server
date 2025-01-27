@@ -5,14 +5,26 @@ package Admin;
 option csharp_namespace = "GrpcService1";
 
 import "Protos/chest.proto";
+import "Protos/item.proto";
 
+// Service definition
 service AdminService {
+  // Chest methods
   rpc CreateChest (CreateChestRequest) returns (CreateChestResponse);
   rpc ReadChest (ReadChestRequest) returns (ReadChestResponse);
   rpc UpdateChest (UpdateChestRequest) returns (UpdateChestResponse);
   rpc DeleteChest (DeleteChestRequest) returns (DeleteChestResponse);
+  rpc ReadAllChests (ReadAllChestsRequest) returns (ReadAllChestsResponse);
+
+  // Item methods
+  rpc CreateItem (CreateItemRequest) returns (CreateItemResponse);
+  rpc ReadItem (ReadItemRequest) returns (ReadItemResponse);
+  rpc UpdateItem (UpdateItemRequest) returns (UpdateItemResponse);
+  rpc DeleteItem (DeleteItemRequest) returns (DeleteItemResponse);
+  rpc GetAllItems (GetAllItemsRequest) returns (GetAllItemsResponse);
 }
 
+// Chest requests and responses
 message CreateChestRequest {
   string name = 1;
   double price = 2;
@@ -50,7 +62,59 @@ message DeleteChestResponse {
   bool success = 1;
 }
 
+message ReadAllChestsRequest {}
+
+message ReadAllChestsResponse {
+  repeated chest.ChestDto chests = 1;
+}
+
+// Item requests and responses
+message CreateItemRequest {
+  string name = 1;
+  double value = 2;
+  string image_url = 3;
+}
+
+message CreateItemResponse {
+  item.ItemDto item = 1;
+}
+
+message ReadItemRequest {
+  int32 id = 1;
+}
+
+message ReadItemResponse {
+  item.ItemDto item = 1;
+}
+
+message UpdateItemRequest {
+  int32 id = 1;
+  string name = 2;
+  double value = 3;
+  string image_url = 4;
+}
+
+message UpdateItemResponse {
+  item.ItemDto item = 1;
+}
+
+message DeleteItemRequest {
+  int32 id = 1;
+}
+
+message DeleteItemResponse {
+  bool success = 1;
+}
+
+message GetAllItemsRequest {}
+
+message GetAllItemsResponse {
+  repeated item.ItemDto items = 1;
+}
+
+
+// Retain the existing structure
 message ItemIdWithDropChance {
-  int32 itemId = 1;
+  int32 item_id = 1;
   double drop_chance = 2;
 }
