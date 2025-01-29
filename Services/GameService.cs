@@ -232,5 +232,25 @@ namespace GrpcService1.Services
             return gameInfo;
         }
 
+        public async Task<int> GetUserGame(int userId)
+        {
+            
+            // Find the active game the user is currently in
+            var activeGame = await _context.GamePlayers
+                .Include(gp => gp.game) // Include the game details
+                .FirstOrDefaultAsync(gp => gp.userId == userId && !gp.game.isStarted);
+
+            // If the user is in an active game, return the gameId
+            if (activeGame != null)
+            {
+                return activeGame.gameId;
+            }
+
+            // If the user is not in any active game, return 0
+            return 0;
+            
+      
+        }
+
     }
 }

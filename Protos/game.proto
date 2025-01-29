@@ -12,9 +12,16 @@ service GameGrpc {
   rpc GetOpenGames (GetOpenGamesRequest) returns (GetOpenGamesResponse);
   rpc GetLobbyDetails (GetLobbyDetailsRequest) returns (GetLobbyDetailsResponse);
   rpc GetGameInfo (getGameInfoRequest) returns (getGameInfoResponse);
+  rpc GetUserGame (getUserGameRequest) returns (getUserGameResponse);
 
 }
 
+message getUserGameRequest{
+    int32 userId = 1;
+}
+message getUserGameResponse{
+    int32 gameId = 1;
+}
 
 message PlayerInfo{
     int32 userId = 1;

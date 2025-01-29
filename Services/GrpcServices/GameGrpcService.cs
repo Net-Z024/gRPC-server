@@ -145,5 +145,28 @@ namespace GrpcService1.Services.GrpcServices
             }
         }
 
+
+        public override async Task<getUserGameResponse> GetUserGame(getUserGameRequest request, ServerCallContext context)
+        {
+            try
+            {
+                // Find the active game the user is currently in
+                var userGame = await _gameService.GetUserGame(request.UserId);
+
+                return new getUserGameResponse
+                {
+                    GameId = userGame
+                };
+
+             
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching user's active game");
+                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            }
+        }
+
     }
 }

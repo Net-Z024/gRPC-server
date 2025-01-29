@@ -1,4 +1,5 @@
-﻿using GrpcService1.Models;
+﻿using Grpc.Core;
+using GrpcService1.Models;
 
 namespace GrpcService1.Services
 {
@@ -13,5 +14,6 @@ namespace GrpcService1.Services
         Task<List<Game>> GetOpenGamesAsync();
 
         Task<GameInfo> GetGameInfoAsync(int gameId);
+        Task<int> GetUserGame(int gameId);
     }
 }
