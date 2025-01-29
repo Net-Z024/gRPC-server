@@ -64,6 +64,7 @@ public class UserService : IUserService
     {
         user = new User(user.IdentityId);
         _context.Users.Add(user);
+        await _context.SaveChangesAsync();
         await Task.CompletedTask;
     }
 
@@ -78,6 +79,7 @@ public class UserService : IUserService
         if (existingUser != null)
         {
             existingUser.AddBalance(user.Balance);
+            await _context.SaveChangesAsync();
         }
         await Task.CompletedTask;
     }
@@ -88,7 +90,9 @@ public class UserService : IUserService
         if (user != null)
         {
             _context.Users.Remove(user);
-            return await Task.FromResult(true);
+            await Task.FromResult(true);
+            await _context.SaveChangesAsync();
+            return true;
         }
         return await Task.FromResult(false);
     }
