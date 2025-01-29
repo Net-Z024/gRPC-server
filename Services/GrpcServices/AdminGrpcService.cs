@@ -85,7 +85,20 @@ public class AdminGrpcService : AdminService.AdminServiceBase
                     {
                         Id = chest.Id,
                         Name = chest.Name,
-                        Price = (double)chest.Price
+                        Price = (double)chest.Price,
+                        PossibleItems = { chest.PossibleItems.Select(p => new ChestItemDto
+                        {
+                            Item = new ItemDto
+                            {
+                                Id = p.ItemId,
+                                Name = p.Item?.Name,
+                                Value = (double)p.Item?.Value!,
+                                ImageUrl = p.Item.ImageUrl
+                            },
+                            DropChance = (double)p.DropChance,
+                            
+                        }) 
+                        }
                     })
                 }
             };

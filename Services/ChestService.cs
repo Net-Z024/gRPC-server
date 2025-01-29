@@ -85,7 +85,7 @@ public class ChestService : IChestService
         existingChest.ClearPossibleItems();
         foreach (var chestItem in chest.PossibleItems)
         {
-            existingChest.AddPossibleItem(chestItem.Item.Id, chestItem.DropChance);
+            existingChest.AddPossibleItem(chestItem.ItemId, chestItem.DropChance);
         }
 
         await _context.SaveChangesAsync();
