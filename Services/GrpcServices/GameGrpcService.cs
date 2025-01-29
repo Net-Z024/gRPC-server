@@ -17,7 +17,23 @@ namespace GrpcService1.Services.GrpcServices
             _gameService = gameService;
             _logger = logger;
         }
+        public override async Task<getGameInfoResponse> GetGameInfo(getGameInfoRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var game = await _gameService.GetGameInfoAsync(request.GameId);
 
+                return new getGameInfoResponse
+                {
+                    GameInfo=game
+                };
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, "Error creating game");
+                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            }
+        }
         public override async Task<CreateGameResponse> CreateGame(CreateGameRequest request, ServerCallContext context)
         {
             try
@@ -79,6 +95,25 @@ namespace GrpcService1.Services.GrpcServices
                 throw new RpcException(new Status(StatusCode.Internal, ex.Message));
             }
         }
+        public override async Task<GetLobbyDetailsResponse> GetLobbyDetails(GetLobbyDetailsRequest request, ServerCallContext context)
+        {
+
+
+            try
+            {
+                var response = await _gameService.GetLobbyDetailsAsync(request.GameId);
+                 return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching lobby info");
+                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            }
+
+
+           
+        }
+
         public override async Task<GetOpenGamesResponse> GetOpenGames(GetOpenGamesRequest request, ServerCallContext context)
         {
             try
@@ -94,6 +129,7 @@ namespace GrpcService1.Services.GrpcServices
                         GameId = game.Id,
                         HostId = game.hostId,
                         CaseId = game.caseId,
+                        CurrentPlayers = game.GamePlayers.Count,
                         MaxPlayers = game.maxPlayers,
                         IsStarted = game.isStarted,
                         CreatedAt = Timestamp.FromDateTime(game.createdAt.ToUniversalTime())

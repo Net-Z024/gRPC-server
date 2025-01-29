@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using GrpcService1.Data;
 using GrpcService1.Models;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,17 @@ namespace GrpcService1.Services
 
         public async Task<Game> CreateGameAsync(int hostId, int caseId, int maxPlayers)
         {
+            var activeGame = await _context.Games.FirstOrDefaultAsync(g => g.hostId == hostId && !g.isStarted);
+
+            if (activeGame != null)
+                throw new Exception("Host already has an active game.");
+            var activeGameAsPlayer = await _context.GamePlayers
+            .Include(gp => gp.game)
+            .AnyAsync(gp => gp.userId == hostId && !gp.game.isStarted);
+            Console.WriteLine("Halo" + hostId + "halo" + activeGameAsPlayer);
+            if (activeGameAsPlayer)
+                throw new Exception("User is already in an active game.");
+
             var user = await _context.Users.FindAsync(hostId);
             var selectedCase = await _context.Chests.Include(c => c.PossibleItems).FirstOrDefaultAsync(c => c.Id == caseId);
 
@@ -63,15 +76,34 @@ namespace GrpcService1.Services
 
         public async Task JoinGameAsync(int gameId, int userId)
         {
-            var game = await _context.Games.Include(g => g.GamePlayers).FirstOrDefaultAsync(g => g.Id == gameId);
-            var user = await _context.Users.FindAsync(userId);
+            var activeGame = await _context.GamePlayers
+            .Include(gp => gp.game)
+            .AnyAsync(gp => gp.userId == userId && !gp.game.isStarted);
+            Console.WriteLine("Halo" + userId + "halo" + activeGame);
+            if (activeGame)
+                throw new Exception("User is already in an active game.");
 
+
+
+            var game = await _context.Games
+            .Include(g => g.GamePlayers)
+            .Include(g => g.chest) 
+            .FirstOrDefaultAsync(g => g.Id == gameId);
+
+            var user = await _context.Users.FindAsync(userId);
+            Console.WriteLine("game" + game);
+            Console.WriteLine("user" + user);
+            Console.WriteLine("chest" + game.chest);
             if (game == null || user == null)
                 throw new Exception("Invalid game or user.");
-
+            
             if (game.isStarted || game.GamePlayers.Count >= game.maxPlayers)
                 throw new Exception("Game is full or has already started.");
-
+            Console.WriteLine(_userService.ToString());
+            if(user.Balance<game.chest.Price)
+            {
+                throw new Exception("User does not have enough balance to enter the game");
+            }
             bool responseBalance = await _userService.SpendBalanceAsync(userId, game.chest.Price);
 
             var gamePlayer = new GamePlayer
@@ -84,7 +116,42 @@ namespace GrpcService1.Services
             _context.GamePlayers.Add(gamePlayer);
             await _context.SaveChangesAsync();
         }
+        public async Task<GetLobbyDetailsResponse> GetLobbyDetailsAsync(int gameId)
+        {
+            var game = await _context.Games
+            .Include(g => g.GamePlayers)
+            .ThenInclude(gp => gp.user)
+            .ThenInclude(u => u.IdentityUser) 
+            .FirstOrDefaultAsync(g => g.Id == gameId);
+    
+            if (game == null)
+            {
+                throw new Exception("Game not found.");
+            }
+            var response = new GetLobbyDetailsResponse
+            {
+                GameId = game.Id,
+                HostId = game.hostId,
+                IsStarted = game.isStarted
+            };
+            foreach (var player in game.GamePlayers)
+            {
+                Console.WriteLine("PIERE" + response.Players);
+                Console.WriteLine("PIERE2" + player.userId);
+                Console.WriteLine("Piere3" + game.GamePlayers);
+                Console.WriteLine("Piere4" + player.user);
+                Console.WriteLine("Piere5" + player.user.IdentityUser);
+                Console.WriteLine("Piere6" + player.user.IdentityUser.UserName);
+                response.Players.Add(new PlayerInfo
+                {
+                    UserId = player.userId,
+                    Username = player.user.IdentityUser.UserName,
+                    IsReady = player.isReady
+                });
+            }
+            return response;
 
+        }
         public async Task MarkReadyAsync(int gameId, int userId)
         {
             var player = await _context.GamePlayers.FirstOrDefaultAsync(p => p.gameId == gameId && p.userId == userId);
@@ -136,5 +203,34 @@ namespace GrpcService1.Services
                 Results = { results }
             };
         }
+
+
+        public async Task<GameInfo> GetGameInfoAsync(int gameId)
+        {
+            var game = await _context.Games
+                .Include(g => g.GamePlayers)
+                .ThenInclude(gp => gp.user)
+                .ThenInclude(u => u.IdentityUser)
+                .FirstOrDefaultAsync(g => g.Id == gameId);
+
+            if (game == null)
+            {
+                throw new Exception("Game not found.");
+            }
+
+            var gameInfo = new GameInfo
+            {
+                GameId = game.Id,
+                HostId = game.hostId,
+                CaseId = game.caseId,
+                CurrentPlayers = game.GamePlayers.Count,
+                MaxPlayers = game.maxPlayers,
+                IsStarted = game.isStarted,
+                CreatedAt = Timestamp.FromDateTime(game.createdAt.ToUniversalTime())
+            };
+
+            return gameInfo;
+        }
+
     }
 }

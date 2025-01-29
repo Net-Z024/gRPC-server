@@ -8,6 +8,10 @@ namespace GrpcService1.Services
         Task JoinGameAsync(int gameId, int userId);
         Task MarkReadyAsync(int gameId, int userId);
         Task<StartGameResponse> StartGameAsync(int gameId);
+        Task<GetLobbyDetailsResponse> GetLobbyDetailsAsync(int gameId);
+
         Task<List<Game>> GetOpenGamesAsync();
+
+        Task<GameInfo> GetGameInfoAsync(int gameId);
     }
 }

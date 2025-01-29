@@ -10,14 +10,32 @@ service GameGrpc {
   rpc MarkReady (MarkReadyRequest) returns (MarkReadyResponse);
   rpc StartGame(StartGameRequest) returns (StartGameResponse);
   rpc GetOpenGames (GetOpenGamesRequest) returns (GetOpenGamesResponse);
+  rpc GetLobbyDetails (GetLobbyDetailsRequest) returns (GetLobbyDetailsResponse);
+  rpc GetGameInfo (getGameInfoRequest) returns (getGameInfoResponse);
 
 }
 
-//Request, Response
+
+message PlayerInfo{
+    int32 userId = 1;
+    string username = 2;
+    bool isReady=3;
+}
+message GetLobbyDetailsRequest{
+    int32 gameId = 1;
+}
+message GetLobbyDetailsResponse{
+    int32 gameId = 1;
+    int32 hostId = 2;
+    bool isStarted = 3;
+    repeated PlayerInfo players = 4;
+    
+}
 message JoinGameRequest {
     int32 game_id = 1;
     int32 user_id = 2;
 }
+
 
 message JoinGameResponse {
    string message = 1;
@@ -63,11 +81,20 @@ message GameInfo {
     int32 gameId = 1;
     int32 hostId = 2;
     int32 caseId = 3;
-    int32 maxPlayers = 4;
-    bool isStarted = 5;
-    google.protobuf.Timestamp createdAt = 6;
+    int32 currentPlayers =4;
+    int32 maxPlayers = 5;
+    bool isStarted = 6;
+    google.protobuf.Timestamp createdAt = 7;
 }
 
 message GetOpenGamesResponse {
     repeated GameInfo games = 1;
+}
+
+message getGameInfoRequest
+{
+    int32 gameId=1;
+}
+message getGameInfoResponse{
+    GameInfo gameInfo =1;
 }
