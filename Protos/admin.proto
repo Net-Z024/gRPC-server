@@ -22,6 +22,12 @@ service AdminService {
   rpc UpdateItem (UpdateItemRequest) returns (UpdateItemResponse);
   rpc DeleteItem (DeleteItemRequest) returns (DeleteItemResponse);
   rpc GetAllItems (GetAllItemsRequest) returns (GetAllItemsResponse);
+
+  // User methods
+  rpc ReadUser (ReadUserRequest) returns (ReadUserResponse);
+  rpc UpdateUserBalance (UpdateUserBalanceRequest) returns (UpdateUserBalanceResponse);
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+  rpc ReadAllUsers (ReadAllUsersRequest) returns (ReadAllUsersResponse);
 }
 
 // Chest requests and responses
@@ -112,9 +118,47 @@ message GetAllItemsResponse {
   repeated item.ItemDto items = 1;
 }
 
-
-// Retain the existing structure
 message ItemIdWithDropChance {
   int32 item_id = 1;
   double drop_chance = 2;
+}
+
+// User requests and responses
+
+message ReadUserRequest {
+  int32 id = 1;
+}
+
+message ReadUserResponse {
+  UserDto user = 1;
+}
+
+message UpdateUserBalanceRequest {
+  int32 id = 1;
+  double balance_change = 2;
+}
+
+message UpdateUserBalanceResponse {
+  UserDto user = 1;
+}
+
+message DeleteUserRequest {
+  int32 id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+}
+
+message ReadAllUsersRequest {}
+
+message ReadAllUsersResponse {
+  repeated UserDto users = 1;
+}
+
+// User DTO
+message UserDto {
+  int32 id = 1;
+  string identity_id = 2;
+  double balance = 3;
 }

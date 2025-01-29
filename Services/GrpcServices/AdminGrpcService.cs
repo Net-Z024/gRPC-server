@@ -7,12 +7,14 @@ public class AdminGrpcService : AdminService.AdminServiceBase
 {
     private readonly IChestService _chestService;
     private readonly IItemService _itemService;
+    private readonly IUserService _userService;
     private readonly ILogger<AdminGrpcService> _logger;
 
-    public AdminGrpcService(IChestService chestService, IItemService itemService, ILogger<AdminGrpcService> logger)
+    public AdminGrpcService(IChestService chestService, IItemService itemService, IUserService userService, ILogger<AdminGrpcService> logger)
     {
         _chestService = chestService;
         _itemService = itemService;
+        _userService = userService;
         _logger = logger;
     }
 
@@ -201,4 +203,53 @@ public class AdminGrpcService : AdminService.AdminServiceBase
             }
         };
     }
+
+        public override async Task<ReadUserResponse> ReadUser(
+            ReadUserRequest request, ServerCallContext context)
+        {
+            var user = await _userService.GetUserByIdAsync(request.Id);
+            if (user == null)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
+            }
+            return new ReadUserResponse { User = new UserDto { Id = user.Id, IdentityId = user.IdentityId, Balance = (double)user.Balance } };
+        }
+
+        public override async Task<UpdateUserBalanceResponse> UpdateUserBalance(
+            UpdateUserBalanceRequest request, ServerCallContext context)
+        {
+            var user = await _userService.GetUserByIdAsync(request.Id);
+            if (user == null)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
+            }
+            user.AddBalance((decimal)request.BalanceChange);
+            await _userService.UpdateUserAsync(user);
+            return new UpdateUserBalanceResponse { User = new UserDto { Id = user.Id, IdentityId = user.IdentityId, Balance = (double)user.Balance } };
+        }
+
+        public override async Task<DeleteUserResponse> DeleteUser(
+            DeleteUserRequest request, ServerCallContext context)
+        {
+            var success = await _userService.DeleteUserAsync(request.Id);
+            return new DeleteUserResponse { Success = success };
+        }
+
+        public override async Task<ReadAllUsersResponse> ReadAllUsers(
+            ReadAllUsersRequest request, ServerCallContext context)
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return new ReadAllUsersResponse
+            {
+                Users =
+                {
+                    users.Select(user => new UserDto
+                    {
+                        Id = user.Id,
+                        IdentityId = user.IdentityId,
+                        Balance = (double)user.Balance
+                    })
+                }
+            };
+        }
 }

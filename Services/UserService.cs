@@ -59,4 +59,42 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
         return true;
     }
+    
+    public async Task CreateUserAsync(User user)
+    {
+        user = new User(user.IdentityId);
+        _context.Users.Add(user);
+        await Task.CompletedTask;
+    }
+
+    public async Task<User?> GetUserByIdAsync(int userId)
+    {
+        return await Task.FromResult(_context.Users.FirstOrDefault(u => u.Id == userId));
+    }
+
+    public async Task UpdateUserAsync(User user)
+    {
+        var existingUser = _context.Users.FirstOrDefault(u => u.Id == user.Id);
+        if (existingUser != null)
+        {
+            existingUser.AddBalance(user.Balance);
+        }
+        await Task.CompletedTask;
+    }
+
+    public async Task<bool> DeleteUserAsync(int userId)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+        if (user != null)
+        {
+            _context.Users.Remove(user);
+            return await Task.FromResult(true);
+        }
+        return await Task.FromResult(false);
+    }
+
+    public async Task<IEnumerable<User>> GetAllUsersAsync()
+    {
+        return await Task.FromResult(_context.Users);
+    }
 }
