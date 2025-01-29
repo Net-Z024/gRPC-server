@@ -2,18 +2,26 @@ namespace GrpcService1.Models;
 
 public class Chest
 {
-    public int Id { get; private set; }
-    public string Name { get; private set; }
-    public decimal Price { get; private set; }
-    public ICollection<ChestItem> PossibleItems { get; private set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public decimal Price { get; set; }
+    public ICollection<ChestItem> PossibleItems { get; set; } = new List<ChestItem>();
 
-    private Chest() { } // For EF Core
+    public Chest() { }
 
     public Chest(string name, decimal price)
     {
         Name = name;
         Price = price;
         PossibleItems = new List<ChestItem>();
+    }
+
+    public Chest(int? id, string name, decimal price, IEnumerable<ChestItem>? possibleItems = null)
+    {
+        if(id != null) Id = id.Value;
+        Name = name;
+        Price = price;
+        PossibleItems = possibleItems?.ToList() ?? new List<ChestItem>();
     }
 
     public void AddPossibleItem(int itemId, decimal dropChance)
@@ -25,10 +33,15 @@ public class Chest
         PossibleItems.Add(chestItem);
     }
 
-    public void Update(string name, decimal price)
+    public void Update(string name, decimal price, IEnumerable<ChestItem> possibleItems)
     {
         Name = name;
         Price = price;
+        PossibleItems.Clear();
+        foreach (var item in possibleItems)
+        {
+            PossibleItems.Add(item);
+        }
     }
 
     public void ClearPossibleItems()

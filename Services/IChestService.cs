@@ -8,8 +8,8 @@ namespace GrpcService1.Services
     {
         Task<IEnumerable<Chest>> GetAllChestsAsync();
         Task<Item> OpenChestAsync(int userId, int chestId);
-        Task CreateChestAsync(Chest chest);
-        Task<Chest> GetChestByIdAsync(int chestId);
+        Task CreateChestAsync(Chest? chest);
+        Task<Chest?> GetChestByIdAsync(int chestId);
         Task UpdateChestAsync(Chest chest);
         Task<bool> DeleteChestAsync(int chestId);
     }

@@ -14,7 +14,7 @@ public class ApplicationDbContext : IdentityDbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Item> Items { get; set; }
     public virtual DbSet<UserItem> UserItems { get; set; }
-    public virtual DbSet<Chest> Chests { get; set; }
+    public virtual DbSet<Chest?> Chests { get; set; }
     public virtual DbSet<ChestItem> ChestItems { get; set; }
 
     public virtual DbSet<Game> Games { get; set; }

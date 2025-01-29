@@ -59,16 +59,16 @@ public class ChestService : IChestService
         throw new InvalidOperationException("No Item was drawn (sum of drop chances might be less than 1)");
     }
 
-    public async Task CreateChestAsync(Chest chest)
+    public async Task CreateChestAsync(Chest? chest)
     {
         await _context.Chests.AddAsync(chest);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Chest> GetChestByIdAsync(int chestId)
+    public async Task<Chest?> GetChestByIdAsync(int chestId)
     {
-        return await _context.Chests
-            .Include(c => c.PossibleItems)
+        return await _context.Chests!
+            .Include<Chest, ICollection<ChestItem>>(c => c!.PossibleItems)
             .ThenInclude(cp => cp.Item)
             .FirstOrDefaultAsync(c => c.Id == chestId);
     }
@@ -81,7 +81,7 @@ public class ChestService : IChestService
 
         if (existingChest == null) throw new ArgumentException("Chest not found");
 
-        existingChest.Update(chest.Name, chest.Price);
+        existingChest.Update(chest.Name, chest.Price, chest.PossibleItems);
         existingChest.ClearPossibleItems();
         foreach (var chestItem in chest.PossibleItems)
         {

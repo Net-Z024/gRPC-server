@@ -16,37 +16,78 @@ public class AdminGrpcService : AdminService.AdminServiceBase
         _logger = logger;
     }
 
-    public override async Task<ReadAllChestsResponse> ReadAllChests(
-        ReadAllChestsRequest request, ServerCallContext context)
-    {
-        var chests = await _chestService.GetAllChestsAsync();
-        return new ReadAllChestsResponse
+        public override async Task<CreateChestResponse> CreateChest(
+            CreateChestRequest request, ServerCallContext context)
         {
-            Chests =
+            var chest = new Chest
+            (
+            null,
+                request.Name,
+                (decimal)request.Price,
+                request.PossibleItems.Select(pi => new ChestItem
+                (
+                    pi.ItemId,
+                    (decimal)pi.DropChance
+                    
+                )).ToList());
+            await _chestService.CreateChestAsync(chest);
+            return new CreateChestResponse { Chest = new ChestDto { Id = chest.Id, Name = chest.Name, Price = (double)chest.Price } };
+        }
+
+        public override async Task<ReadChestResponse> ReadChest(
+            ReadChestRequest request, ServerCallContext context)
+        {
+            var chest = await _chestService.GetChestByIdAsync(request.Id);
+            if (chest == null)
             {
-                chests.Select(chest => new ChestDto
-                {
-                    Id = chest.Id,
-                    Name = chest.Name,
-                    Price = (double)chest.Price,
-                    PossibleItems =
-                    {
-                        chest.PossibleItems.Select(pi => new ChestItemDto
-                        {
-                            Item = new ItemDto
-                            {
-                                Id = pi.Item.Id,
-                                Name = pi.Item.Name,
-                                Value = (double)pi.Item.Value,
-                                ImageUrl = pi.Item.ImageUrl
-                            },
-                            DropChance = (double)pi.DropChance
-                        })
-                    }
-                })
+                throw new RpcException(new Status(StatusCode.NotFound, "Chest not found"));
             }
-        };
-    }
+            return new ReadChestResponse { Chest = new ChestDto { Id = chest.Id, Name = chest.Name, Price = (double)chest.Price } };
+        }
+
+        public override async Task<UpdateChestResponse> UpdateChest(
+            UpdateChestRequest request, ServerCallContext context)
+        {
+            var chest = new Chest
+            {
+                Id = request.Id,
+                Name = request.Name,
+                Price = (decimal)request.Price,
+                PossibleItems = request.PossibleItems.Select(pi => new ChestItem
+                (
+                    pi.ItemId,
+                    (decimal)pi.DropChance
+                    
+                )).ToList()
+            };
+            await _chestService.UpdateChestAsync(chest);
+            return new UpdateChestResponse { Chest = new ChestDto { Id = chest.Id, Name = chest.Name, Price = (double)chest.Price } };
+        }
+
+        public override async Task<DeleteChestResponse> DeleteChest(
+            DeleteChestRequest request, ServerCallContext context)
+        {
+            var success = await _chestService.DeleteChestAsync(request.Id);
+            return new DeleteChestResponse { Success = success };
+        }
+
+        public override async Task<ReadAllChestsResponse> ReadAllChests(
+            ReadAllChestsRequest request, ServerCallContext context)
+        {
+            var chests = await _chestService.GetAllChestsAsync();
+            return new ReadAllChestsResponse
+            {
+                Chests =
+                {
+                    chests.Select(chest => new ChestDto
+                    {
+                        Id = chest.Id,
+                        Name = chest.Name,
+                        Price = (double)chest.Price
+                    })
+                }
+            };
+        }
 
     public override async Task<CreateItemResponse> CreateItem(
         CreateItemRequest request, ServerCallContext context)
