@@ -34,6 +34,12 @@ namespace GrpcService1.Models
             if (amount < 0) throw new ArgumentException("Amount cannot be negative");
             Balance += amount;
         }
+        
+        public void SetBalance(decimal amount)
+        {
+            if (amount < 0) throw new ArgumentException("Amount cannot be negative");
+            Balance = amount;
+        }
 
         public bool TrySpendBalance(decimal amount)
         {

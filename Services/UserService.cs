@@ -78,7 +78,7 @@ public class UserService : IUserService
         var existingUser = _context.Users.FirstOrDefault(u => u.Id == user.Id);
         if (existingUser != null)
         {
-            existingUser.AddBalance(user.Balance);
+            existingUser.SetBalance(user.Balance);
             await _context.SaveChangesAsync();
         }
         await Task.CompletedTask;
